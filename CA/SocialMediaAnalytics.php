@@ -20,49 +20,6 @@ class SocialMediaAnalytics {
         return $result;
     }
 
-        public function generateRandomData($platform) {
-        $current_date = new DateTime();
-        $data = [];
-        for ($i = 30; $i >= 0; $i--) {
-            $date = clone $current_date;
-            $date->modify("-$i days");
-            $followers = mt_rand(10000, 1000000);
-            $engagement = mt_rand(1000, 100000);
-            
-            switch ($platform) {
-                case 'facebook':
-                    $data[] = [
-                        'date' => $date->format('Y-m-d'),
-                        'metrics' => [
-                            'followers' => $followers,
-                            'likes' => $engagement,
-                            'recent_posts' => mt_rand(1, 10)
-                        ]
-                    ];
-                    break;
-                case 'instagram':
-                    $data[] = [
-                        'date' => $date->format('Y-m-d'),
-                        'metrics' => [
-                            'followers' => $followers,
-                            'posts' => mt_rand(100, 1000)
-                        ]
-                    ];
-                    break;
-                case 'twitter':
-                    $data[] = [
-                        'date' => $date->format('Y-m-d'),
-                        'metrics' => [
-                            'followers' => $followers,
-                            'tweets' => mt_rand(1000, 10000)
-                        ]
-                    ];
-                    break;
-            }
-        }
-        return $data;
-    }
-
     public function fetchFacebookData($page_name) {
         try {
             $url = "https://www.facebook.com/{$page_name}";
@@ -92,7 +49,8 @@ class SocialMediaAnalytics {
                 'recent_posts' => $recentPosts
             ];
         } catch (Exception $e) {
-            return $this->generateRandomData('facebook')[0]['metrics'];
+            error_log('Facebook scraping error: ' . $e->getMessage());
+            return null;
         }
     }
 
@@ -121,7 +79,8 @@ class SocialMediaAnalytics {
                 'posts' => $posts
             ];
         } catch (Exception $e) {
-            return $this->generateRandomData('instagram')[0]['metrics'];
+            error_log('Instagram scraping error: ' . $e->getMessage());
+            return null;
         }
     }
 
@@ -150,7 +109,8 @@ class SocialMediaAnalytics {
                 'tweets' => $tweets
             ];
         } catch (Exception $e) {
-            return $this->generateRandomData('twitter')[0]['metrics'];
+            error_log('Twitter scraping error: ' . $e->getMessage());
+            return null;
         }
     }
 
